@@ -1,4 +1,4 @@
-package wait
+package atomic
 
 import "sync/atomic"
 
