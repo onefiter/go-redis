@@ -1,4 +1,4 @@
-package parse
+package parser
 
 import (
 	"bufio"
@@ -69,7 +69,7 @@ func parse0(reader io.Reader, ch chan<- *Payload) {
 			continue
 		}
 
-		// parse line
+		// parser line
 		if !state.readingMultiLine {
 			// receive new response
 			if msg[0] == '*' {
