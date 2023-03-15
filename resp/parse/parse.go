@@ -28,11 +28,11 @@ func ParseStream(reader io.Reader) <-chan *Payload {
 }
 
 type readState struct {
-	readingMultiLine  bool
-	expectedArgsCount int
-	msgType           byte
-	args              [][]byte
-	bulkLen           int64
+	readingMultiLine  bool     // 解析单行数据还是多行数据
+	expectedArgsCount int      // 读取的指令有几个参数
+	msgType           byte     // 用户的消息类型
+	args              [][]byte // 传过来的具体数据
+	bulkLen           int64    // 数据块的长度
 }
 
 func (s *readState) finished() bool {
@@ -215,7 +215,13 @@ func parseBulkHeader(msg []byte, state *readState) error {
 	}
 }
 
+// 读取以下形式
+
+// +OK\r\n
+// -err\r\n
+// :5\r\n
 func parseSingleLineReply(msg []byte) (resp.Reply, error) {
+	// str = +OK
 	str := strings.TrimSuffix(string(msg), "\r\n")
 	var result resp.Reply
 	switch msg[0] {
@@ -234,6 +240,9 @@ func parseSingleLineReply(msg []byte) (resp.Reply, error) {
 }
 
 // read the non-first lines of multi bulk reply or bulk reply
+
+// $3\r\nSET\r\n$3\r\nkey\r\n$5\r\nvalue\r\n --> SET\r\n$3\r\nkey\r\n$5\r\nvalue\r\n(body)
+// $4\r\nPING\r\n --> PIN\r\n(body)
 func readBody(msg []byte, state *readState) error {
 	line := msg[0 : len(msg)-2]
 	var err error
