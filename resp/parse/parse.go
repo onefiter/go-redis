@@ -19,6 +19,7 @@ type Payload struct {
 	Err  error
 }
 
+// 异步解析 go parse0(reader, ch)
 // ParseStream reads data from io.Reader and send payloads through channel
 func ParseStream(reader io.Reader) <-chan *Payload {
 	ch := make(chan *Payload)
@@ -142,9 +143,13 @@ func parse0(reader io.Reader, ch chan<- *Payload) {
 	}
 }
 
+// 读一行
+// 1. 没有$指令
+// 2. 有$指令，严格读取字符个数，需要考虑字符串二进制安全
 func readLine(bufReader *bufio.Reader, state *readState) ([]byte, bool, error) {
 	var msg []byte
 	var err error
+
 	if state.bulkLen == 0 { // read normal line
 		msg, err = bufReader.ReadBytes('\n')
 		if err != nil {
