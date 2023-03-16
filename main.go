@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/go-redis/resp/handler"
 	"os"
 
 	"github.com/go-redis/config"
 	"github.com/go-redis/lib/logger"
 	"github.com/go-redis/tcp"
-	EchoHandler "github.com/go-redis/tcp"
 )
 
 const configFile string = "redis.conf"
@@ -42,7 +42,7 @@ func main() {
 				config.Properties.Bind,
 				config.Properties.Port),
 		},
-		EchoHandler.MakeHandler())
+		handler.MakeHandler())
 	if err != nil {
 		logger.Error(err)
 	}

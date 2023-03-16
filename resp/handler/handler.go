@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"github.com/go-redis/database"
 	databaseface "github.com/go-redis/interface/database"
 	"github.com/go-redis/lib/logger"
 	"github.com/go-redis/lib/sync/atomic"
@@ -23,6 +24,15 @@ type RespHandler struct {
 	activeConn sync.Map // *client -> placeholder
 	db         databaseface.Database
 	closing    atomic.Boolean // refusing new client and new request
+}
+
+// MakeHandler creates a RespHandler instance
+func MakeHandler() *RespHandler {
+	var db databaseface.Database
+	db = database.NewEchoDatabase()
+	return &RespHandler{
+		db: db,
+	}
 }
 
 func (h *RespHandler) closeClient(client *connection.Connection) {
