@@ -241,8 +241,8 @@ func parseSingleLineReply(msg []byte) (resp.Reply, error) {
 
 // read the non-first lines of multi bulk reply or bulk reply
 
-// $3\r\nSET\r\n$3\r\nkey\r\n$5\r\nvalue\r\n --> SET\r\n$3\r\nkey\r\n$5\r\nvalue\r\n(body)
-// $4\r\nPING\r\n --> PIN\r\n(body)
+// *3\r\n$3\r\nSET\r\n$3\r\nkey\r\n$5\r\nvalue\r\n --> SET\r\n$3\r\nkey\r\n$5\r\nvalue\r\n(body)
+// $4\r\nPING\r\n --> PING\r\n(body)
 func readBody(msg []byte, state *readState) error {
 	line := msg[0 : len(msg)-2]
 	var err error
