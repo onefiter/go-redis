@@ -1,16 +1,18 @@
 package database
 
 import (
+	"strings"
+
 	"github.com/go-redis/datastruct/dict"
 	"github.com/go-redis/interface/database"
 	"github.com/go-redis/interface/resp"
 	"github.com/go-redis/resp/reply"
-	"strings"
 )
 
 type DB struct {
-	index int
-	data  dict.Dict
+	index  int
+	data   dict.Dict
+	addAof func(CmdLine)
 }
 
 // ExecFunc is interface for command executor
@@ -24,6 +26,9 @@ type CmdLine = [][]byte
 func makeDB() *DB {
 	db := &DB{
 		data: dict.MakeSyncDict(),
+		addAof: func(cl CmdLine) {
+
+		},
 	}
 	return db
 }
