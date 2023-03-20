@@ -46,19 +46,20 @@ func (cluster *ClusterDatabase) relay(peer string, c resp.Connection, args [][]b
 	if err != nil {
 		return reply.MakeErrReply(err.Error())
 	}
-	defer func() {
+	defer func() { // 归还连接
 		_ = cluster.returnPeerClient(peer, peerClient)
 	}()
+	// 先转发“选择的哪个db”
 	peerClient.Send(utils.ToCmdLine("SELECT", strconv.Itoa(c.GetDBIndex())))
 	return peerClient.Send(args)
 }
 
 // broadcast broadcasts command to all node in cluster
 func (cluster *ClusterDatabase) broadcast(c resp.Connection, args [][]byte) map[string]resp.Reply {
-	result := make(map[string]resp.Reply)
+	results := make(map[string]resp.Reply)
 	for _, node := range cluster.nodes {
-		reply := cluster.relay(node, c, args)
-		result[node] = reply
+		result := cluster.relay(node, c, args)
+		results[node] = result
 	}
-	return result
+	return results
 }

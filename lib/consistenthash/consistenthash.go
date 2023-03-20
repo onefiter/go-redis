@@ -8,7 +8,7 @@ import (
 type HashFunc func(data []byte) uint32
 
 type NodeMap struct {
-	hashFunc    HashFunc
+	hashFunc    HashFunc // hash函数
 	nodeHashes  []int
 	nodeHashMap map[int]string
 }
@@ -41,6 +41,7 @@ func (m *NodeMap) AddNode(keys ...string) {
 	sort.Ints(m.nodeHashes)
 }
 
+// 选择一个节点
 func (m *NodeMap) PickNode(key string) string {
 	if m.IsEmpty() {
 		return ""
